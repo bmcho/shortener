@@ -57,21 +57,26 @@ def register(request):
     return render(request, "register.html", {"form": form})
 
 def login_view(request):
+    msg = None
+    is_ok = False
     if request.method == "POST":
         form = AuthenticationForm(request, request.POST)
-        msg = "가입되어 있지 않거나 로그인 정보가 잘못 되었습니다."
-        print(form.is_valid)
         if form.is_valid():
             username = form.cleaned_data.get("username")
             raw_password = form.cleaned_data.get("password")
             user = authenticate(username=username, password=raw_password)
             if user is not None:
-                msg = "로그인 성공"
                 login(request, user)
-        return render(request, "login.html", {"form": form, "msg": msg})
+                is_ok = True
+        else:
+            msg = "올바른 유저ID와 패스워드를 입력하세요."
     else:
         form = AuthenticationForm()
-        return render(request, "login.html", {"form": form})
+
+    for visible in form.visible_fields():
+        visible.field.widget.attrs["placeholder"] = "유저ID" if visible.name == "username" else "패스워드"
+        visible.field.widget.attrs["class"] = "form-control"
+    return render(request, "login.html", {"form": form, "msg": msg, "is_ok": is_ok})
 
 
 def logout_view(request):
@@ -81,7 +86,7 @@ def logout_view(request):
 @login_required
 def list_view(request):
     page = int(request.GET.get("p", 1))
-    users = Users.objects.all().order_by("-id")
+    users = Users.objects.all().order_by("-id") # '-' 오름차순, 
     paginator = Paginator(users, 10) # objects, count per page 
     users = paginator.get_page(page)
 
