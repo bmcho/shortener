@@ -20,6 +20,11 @@ def index(request):
     print(email)
     return render(request, "base.html", {"welcome_msg": "Hello FastCampus!"})
 
+def url_list(request):
+    return render(
+        request,
+        "url_list.html",
+    )
 
 @csrf_exempt
 def get_user(request, user_id):
@@ -76,6 +81,9 @@ def login_view(request):
                     login(request, user)
                     is_ok = True
                     request.session["remember_me"] = remember_me
+
+                    # if not remember_me:
+                    #     request.session.set_expiry(0)
 
     else:
         form = LoginForm()

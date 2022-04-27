@@ -17,7 +17,7 @@ import debug_toolbar
 from django.conf.urls import include
 from django.contrib import admin
 from django.urls import path
-from shortener.views import index, redirect_test, get_user, register, login_view, logout_view, list_view
+from shortener.views import index, redirect_test, get_user, register, login_view, logout_view, list_view, url_list
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -29,4 +29,5 @@ urlpatterns = [
     path("logout", logout_view, name="logout"),
     path("__debug__/", include(debug_toolbar.urls)),  # Django Debug Tool
     path("list", list_view, name="list_view"),
+    path("url_list", url_list, name="url_list"),
 ]
