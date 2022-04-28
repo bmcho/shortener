@@ -10,6 +10,7 @@ Django = "^4.0.4"
 django_widgets = "^0.1.16"
 django-seed = "^0.3.1"
 django-debug-toolbar = "^3.2.4"
+gunicorn = "^20.1.0"
 
 [tool.poetry.dev-dependencies]
 
