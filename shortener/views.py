@@ -13,17 +13,14 @@ from django.contrib import messages
 
 
 def index(request):
-    user = Users.objects.filter(id=request.user.id).first()
-    email = user.email if user else "Anonymous User!"
-    print("Logged in?", request.user.is_authenticated)
-    if request.user.is_authenticated is False:
-        email = "Anonymous User!"
-    print(email)
-    return render(request, "base.html", {"welcome_msg": "Hello FastCampus!"})
+    return render(request, "base.html")
 
+
+@login_required
 def url_list(request):
     get_list = ShortenedUrls.objects.order_by("-created_at").all()
     return render(request, "url_list.html", {"list": get_list})
+
 
 @login_required
 def url_create(request):
@@ -70,6 +67,7 @@ def url_change(request, action, url_id):
 
     return redirect("url_list")
 
+
 @csrf_exempt
 def get_user(request, user_id):
     print(user_id)
@@ -85,10 +83,12 @@ def get_user(request, user_id):
 
         return JsonResponse(dict(msg="You just reached with Post Method!"))
 
+
 def redirect_test(request):
     print("Go Redirect")
     return redirect("index")
     
+
 def register(request):
     if request.method == "POST":
         form = RegisterForm(request.POST)
@@ -104,6 +104,7 @@ def register(request):
     else:
         form = RegisterForm()
         return render(request, "register.html", {"form": form})
+
 
 def login_view(request):
     msg = None
@@ -138,6 +139,7 @@ def login_view(request):
 def logout_view(request):
     logout(request)
     return redirect("login")
+
 
 @login_required
 def list_view(request):
