@@ -13,6 +13,7 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+
 from shrinkers.settings import DEBUG
 if DEBUG:
     import debug_toolbar
@@ -20,27 +21,14 @@ if DEBUG:
 from django.conf.urls import include
 from django.contrib import admin
 from django.urls import path
-from shortener.views import (
-    index,
-    get_user,
-    list_view,
-    register,
-    login_view,
-    logout_view,
-    redirect_test
-)
+from shortener.urls.views import url_redirect
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', index, name='index'),
-    path('redirect', redirect_test),
-    path('get_user/<int:user_id>', get_user),
-    path("register", register, name="register"),
-    path("login", login_view, name="login"),
-    path("logout", logout_view, name="logout"),
+    path("", include("shortener.index.urls")),
     # path("__debug__/", include(debug_toolbar.urls)),  # Django Debug Tool
-    path("list", list_view, name="list_view"),
     path("urls/", include("shortener.urls.urls")),
+    path("<str:prefix>/<str:url>", url_redirect),
 ]
 
 if DEBUG:
