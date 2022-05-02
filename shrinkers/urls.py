@@ -27,9 +27,6 @@ from shortener.views import (
     register,
     login_view,
     logout_view,
-    url_list,
-    url_create,
-    url_change,
     redirect_test
 )
 
@@ -43,10 +40,7 @@ urlpatterns = [
     path("logout", logout_view, name="logout"),
     # path("__debug__/", include(debug_toolbar.urls)),  # Django Debug Tool
     path("list", list_view, name="list_view"),
-    path("url_list", url_list, name="url_list"),
-    path("urls", url_list, name="url_list"),
-    path("urls/create", url_create, name="url_create"),
-    path("urls/<str:action>/<int:url_id>", url_change, name="url_change"),
+    path("urls/", include("shortener.urls.urls")),
 ]
 
 if DEBUG:
