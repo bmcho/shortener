@@ -1,23 +1,39 @@
 from django.contrib import messages
 from shortener.forms import UrlCreateForm
+from django.db.models import Count
 from django.shortcuts import redirect, render, get_object_or_404
-from shortener.models import ShortenedUrls
+from shortener.models import ShortenedUrls, Statistic, TrackingParams
 from shortener.utils import url_count_changer
 from django.contrib.auth.decorators import login_required
+from ratelimit.decorators import ratelimit
+from django.contrib.gis.geoip2 import GeoIP2
 
+@ratelimit(key="ip", rate="3/m")
 def url_redirect(request, prefix, url):
+    was_limited = getattr(request, "limited", False)
+    if was_limited:
+        return redirect("index")
     get_url = get_object_or_404(ShortenedUrls, prefix=prefix, shortened_url=url)
     is_permanent = False
     target = get_url.target_url
-    if get_url.creator.organization:
-        is_permanent = True
-
+    
     if not target.startswith("https://") and not target.startswith("http://"):
         target = "https://" + get_url.target_url
+
+    custom_params = request.GET.dict() if request.GET.dict() else None
+    history = Statistic()
+    history.record(request, get_url, custom_params)
+
     return redirect(target, permanent=is_permanent)
 
 @login_required
 def url_list(request):
+    a = (
+        Statistic.objects.filter(shortened_url_id=5)
+        .values("custom_params__email_id")
+        .annotate(t=Count("custom_params__email_id"))
+    )
+    print(a)
     get_list = ShortenedUrls.objects.order_by("-created_at").all()
     return render(request, "url_list.html", {"list": get_list})
 
