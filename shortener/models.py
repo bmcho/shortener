@@ -6,14 +6,22 @@ import string
 import random
 
 # Create your models here.
-class PayPlan(models.Model):
+
+class TimeStampedModel(models.Model):
+    updated_at = models.DateTimeField(auto_now=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        abstract = True
+
+class PayPlan(TimeStampedModel):
     name = models.CharField(max_length=20)
     price = models.IntegerField()
     updated_at = models.DateTimeField(auto_now=True)
-    create_at = models.DateTimeField(auto_now_add=True)
+    created_at = models.DateTimeField(auto_now_add=True)
 
 
-class Organization(models.Model):
+class Organization(TimeStampedModel):
     class Industries(models.TextChoices):
         PERSONAL = 'persnal'
         RETAIL = 'retail'
@@ -42,7 +50,7 @@ class Users(models.Model):
 #     pay_plan = models.ForeignKey(PayPlan, on_delete=models.DO_NOTHING)
 
 
-class EmailVerification(models.Model):
+class EmailVerification(TimeStampedModel):
     user = models.ForeignKey(Users, on_delete=models.CASCADE)
     key = models.CharField(max_length=100, null=True)
     verified = models.BooleanField(default=False)
@@ -50,7 +58,7 @@ class EmailVerification(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
 
-class Categories(models.Model):
+class Categories(TimeStampedModel):
     name = models.CharField(max_length=100)
     organiztion = models.ForeignKey(Organization, on_delete=models.DO_NOTHING, null=True)
     creator = models.ForeignKey(Users, on_delete=models.CASCADE)
@@ -58,7 +66,7 @@ class Categories(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     
 
-class ShortenedUrls(models.Model):
+class ShortenedUrls(TimeStampedModel):
     class UrlCreatedVia(models.TextChoices):
         WEBSITE = "web"
         TELEGRAM = "telegram"
