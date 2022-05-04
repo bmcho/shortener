@@ -44,7 +44,6 @@ def url_create(request):
         if form.is_valid():
             msg = f"{form.cleaned_data.get('nick_name')} 생성 완료!"
             messages.add_message(request, messages.INFO, msg)
-            print(request)
             form.save(request)
             return redirect("url_list")
         else:
@@ -88,6 +87,7 @@ def url_change(request, action, url_id):
     return redirect("url_list")
 
 
+@login_required
 def statistic_view(request, url_id: int):
     url_info = get_object_or_404(ShortenedUrls, pk=url_id)
     base_qs = Statistic.objects.filter(shortened_url_id=url_id, created_at__gte=get_kst() - timedelta(days=14))
@@ -97,7 +97,6 @@ def statistic_view(request, url_id: int):
         .values("created_at__date", "clicks")
         .order_by("created_at__date")
     )
-
     date_list = [c.get("created_at__date").strftime("%Y-%m-%d") for c in clicks]
     click_list = [c.get("clicks") for c in clicks]
     return render(
