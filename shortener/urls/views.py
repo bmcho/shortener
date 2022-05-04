@@ -16,7 +16,9 @@ def url_redirect(request, prefix, url):
     get_url = get_object_or_404(ShortenedUrls, prefix=prefix, shortened_url=url)
     is_permanent = False
     target = get_url.target_url
-    
+    if get_url.creator.organization:
+        is_permanent = True
+
     if not target.startswith("https://") and not target.startswith("http://"):
         target = "https://" + get_url.target_url
 
@@ -28,13 +30,7 @@ def url_redirect(request, prefix, url):
 
 @login_required
 def url_list(request):
-    a = (
-        Statistic.objects.filter(shortened_url_id=5)
-        .values("custom_params__email_id")
-        .annotate(t=Count("custom_params__email_id"))
-    )
-    print(a)
-    get_list = ShortenedUrls.objects.order_by("-created_at").all()
+    get_list = ShortenedUrls.objects.order_by("-created_at").filter(creator_id=request.user.id).all()
     return render(request, "url_list.html", {"list": get_list})
 
 
@@ -61,7 +57,7 @@ def url_change(request, action, url_id):
     if request.method == "POST":
         url_data = ShortenedUrls.objects.filter(id=url_id)
         if url_data.exists():
-            if url_data.first().created_by_id != request.user.id:
+            if url_data.first().creator_id != request.user.id:
                 msg = "자신이 소유하지 않은 URL 입니다."
             else:
                 if action == "delete":
