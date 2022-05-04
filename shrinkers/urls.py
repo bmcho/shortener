@@ -22,6 +22,7 @@ from django.conf.urls import include
 from django.contrib import admin
 from django.urls import path
 from shortener.urls.views import url_redirect
+from shortener.urls.urls import router as url_router
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -29,6 +30,7 @@ urlpatterns = [
     # path("__debug__/", include(debug_toolbar.urls)),  # Django Debug Tool
     path("urls/", include("shortener.urls.urls")),
     path("<str:prefix>/<str:url>", url_redirect),
+    path("api/", include(url_router.urls)),
 ]
 
 if DEBUG:

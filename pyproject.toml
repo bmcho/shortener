@@ -19,6 +19,7 @@ geoip2 = "^4.5.0"
 user-agents = "^2.2.0"
 django-user-agents = "^0.4.0"
 django-ratelimit = "^3.0.1"
+djangorestframework = "^3.13.1"
 
 [tool.poetry.dev-dependencies]
 
