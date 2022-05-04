@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     # 'debug_toolbar', # Django Debug Toolbar
     # 'django_seed',
     "django_user_agents",
+    'drf_yasg',
     "rest_framework"
 ]
 
