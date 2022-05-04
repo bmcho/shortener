@@ -13,5 +13,6 @@ class Users(Schema):
     full_name: str = None
     organization: OrganizationSchema = None
 
+
 class TelemgramUpdateSchema(Schema):
-    username: str 
+    username: str

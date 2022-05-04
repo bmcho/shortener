@@ -12,12 +12,14 @@ import itertools
 
 # Create your models here.
 
+
 class TimeStampedModel(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         abstract = True
+
 
 class PayPlan(TimeStampedModel):
     name = models.CharField(max_length=20)
@@ -26,18 +28,18 @@ class PayPlan(TimeStampedModel):
 
 class Organization(TimeStampedModel):
     class Industries(models.TextChoices):
-        PERSONAL = 'persnal'
-        RETAIL = 'retail'
-        MANUFACTURING = 'manufacturing'
-        IT = 'it'
-        OTHERS = 'others'
-    
+        PERSONAL = "persnal"
+        RETAIL = "retail"
+        MANUFACTURING = "manufacturing"
+        IT = "it"
+        OTHERS = "others"
+
     name = models.CharField(max_length=50)
     industry = models.CharField(max_length=15, choices=Industries.choices, default=Industries.OTHERS)
     pay_plan = models.ForeignKey(PayPlan, on_delete=models.DO_NOTHING, null=True)
 
 
-#AUTH_USER_MODEL = "shortener.Users"
+# AUTH_USER_MODEL = "shortener.Users"
 # 새로 Authuser를 상속받기 때문에 seetings에 위의 값을 따로 지정을 해줘야한다
 class Users(models.Model):
     user = models.OneToOneField(U, on_delete=models.CASCADE)
@@ -63,7 +65,7 @@ class Categories(TimeStampedModel):
     name = models.CharField(max_length=100)
     organiztion = models.ForeignKey(Organization, on_delete=models.DO_NOTHING, null=True)
     creator = models.ForeignKey(Users, on_delete=models.CASCADE)
-    
+
 
 class ShortenedUrls(TimeStampedModel):
     class UrlCreatedVia(models.TextChoices):
@@ -133,7 +135,7 @@ class Statistic(TimeStampedModel):
         self.device_os = request.user_agent.os.family
         t = TrackingParams.get_tracking_params(url.id)
         self.custom_params = dict_slice(dict_filter(params, t), 5)
-        try: 
+        try:
             country = GeoIP2().country(self.ip)
             self.country_code = country.get("country_code", "XX")
             self.country_name = country.get("country_name", "UNKNOWN")
@@ -142,10 +144,11 @@ class Statistic(TimeStampedModel):
         url.clicked()
         self.save()
 
+
 class TrackingParams(TimeStampedModel):
     shortened_url = models.ForeignKey(ShortenedUrls, on_delete=models.CASCADE)
     params = models.CharField(max_length=20)
-    
+
     @classmethod
     def get_tracking_params(cls, shortened_url_id):
         return cls.objects.filter(shortened_url_id=shortened_url_id).values_list("params", flat=True)
