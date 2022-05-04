@@ -25,6 +25,9 @@ from django.urls import path
 from rest_framework import permissions
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
+from ninja import NinjaAPI
+from shortener.users.apis import user as user_router
+
 
 schema_view = get_schema_view(
     openapi.Info(
@@ -39,6 +42,9 @@ schema_view = get_schema_view(
     permission_classes=(permissions.AllowAny,),
 )
 
+apis = NinjaAPI(title="Shrinkers API")
+apis.add_router("/users/", user_router, tags=["Common"])
+
 urlpatterns = [
     re_path(r"^swagger(?P<format>\.json|\.yaml)$", schema_view.without_ui(cache_timeout=0), name="schema-json"),
     re_path(r"^swagger/$", schema_view.with_ui("swagger", cache_timeout=0), name="schema-swagger-ui"),
@@ -49,6 +55,7 @@ urlpatterns = [
     path("urls/", include("shortener.urls.urls")),
     path("<str:prefix>/<str:url>", url_redirect),
     path("api/", include(url_router.urls)),
+    path("ninja-api/", apis.urls),
 ]
 
 if DEBUG:
