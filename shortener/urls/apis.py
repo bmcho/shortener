@@ -9,6 +9,7 @@ from rest_framework.renderers import JSONRenderer
 from rest_framework.response import Response
 from rest_framework import viewsets, permissions, status
 from rest_framework.decorators import renderer_classes, action
+from django.core.cache import cache
 
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -50,7 +51,11 @@ class UserViewSet(viewsets.ModelViewSet):
 
     def list(self, request):
         # GET ALL
-        queryset = self.get_queryset().filter(creator_id=request.user.id).all()
+        # query cache
+        queryset = cache.get("url_list")
+        if not queryset:
+            queryset = self.get_queryset().filter(creator_id=request.user.id).all()
+            cache.set("url_list", queryset, 300)
         serializer = UrlListSerializer(queryset, many=True)
         return Response(serializer.data)
 
