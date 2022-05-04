@@ -1,4 +1,4 @@
-from rest_framework.response import Response
+from requests import Response
 from shortener.models import ShortenedUrls, Users
 from django.db.models import F
 
