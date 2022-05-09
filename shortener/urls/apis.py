@@ -30,6 +30,7 @@ class UserViewSet(viewsets.ModelViewSet):
         pass
 
     def retrieve(self, request, pk=None):
+        # Detail GET
         queryset = self.get_queryset().filter(pk=pk).first()
         serializer = UrlListSerializer(queryset)
         return Response(serializer.data)
@@ -52,10 +53,10 @@ class UserViewSet(viewsets.ModelViewSet):
     def list(self, request):
         # GET ALL
         # query cache
-        queryset = cache.get("url_list")
+        queryset = cache.get("url_lists")
         if not queryset:
             queryset = self.get_queryset().filter(creator_id=request.user.id).all()
-            cache.set("url_list", queryset, 300)
+            cache.set("url_lists", queryset, 20)
         serializer = UrlListSerializer(queryset, many=True)
         return Response(serializer.data)
 

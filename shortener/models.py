@@ -106,6 +106,12 @@ class ShortenedUrls(TimeStampedModel):
         return self
 
 
+class Schedules(TimeStampedModel):
+    job_name = models.CharField(max_length=50)
+    flag_name = models.CharField(max_length=50)
+    value = models.IntegerField(default=0)
+
+
 class Statistic(TimeStampedModel):
     class ApproachDevice(models.TextChoices):
         PC = "pc"
@@ -134,7 +140,8 @@ class Statistic(TimeStampedModel):
         )
         self.device_os = request.user_agent.os.family
         t = TrackingParams.get_tracking_params(url.id)
-        self.custom_params = dict_slice(dict_filter(params, t), 5)
+        if params:
+            self.custom_params = dict_slice(dict_filter(params, t), 5)
         try:
             country = GeoIP2().country(self.ip)
             self.country_code = country.get("country_code", "XX")
