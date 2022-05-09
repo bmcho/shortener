@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.0/ref/settings/
 """
 
+import json
 from pathlib import Path
 from dotenv import load_dotenv
 import os
@@ -158,9 +159,16 @@ USE_I18N = True
 
 USE_TZ = True
 
-GS_CREDENTIALS = service_account.Credentials.from_service_account_file(
-    os.path.join(BASE_DIR, "shrinkers/service_key.json")
-)
+keys = json.load(open(os.path.join(BASE_DIR, "shrinkers/service_key.json")))
+
+try:
+    EMAIL_ID = keys.get("email")
+    EMAIL_PW = json.load(open(os.path.join(BASE_DIR, "keys.json"))).get("email_pw")
+except Exception:
+    EMAIL_ID = None
+    EMAIL_PW = None
+
+GS_CREDENTIALS = service_account.Credentials.from_service_account_info(keys.get("service_key"))
 DEFAULT_FILE_STORAGE = "config.storage_backends.GoogleCloudMediaStorage"
 STATICFILES_STORAGE = "config.storage_backends.GoogleCloudStaticStorage"
 GS_STATIC_BUCKET_NAME = "shrinkers-api-bk"
