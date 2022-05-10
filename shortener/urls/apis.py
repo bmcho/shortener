@@ -19,7 +19,7 @@ class UserViewSet(viewsets.ModelViewSet):
 
     queryset = ShortenedUrls.objects.order_by("-created_at")
     serializer_class = UrlListSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticated]  # permissions.IsAdminUser
 
     def create(self, request):
         # POST
@@ -48,15 +48,17 @@ class UserViewSet(viewsets.ModelViewSet):
         if not queryset.exists():
             raise Http404
         queryset.delete()
+        cache.delete(f"url_lists_{request.users_id}")
+        url_count_changer(request, False)
         return MsgOk()
 
     def list(self, request):
         # GET ALL
         # query cache
-        queryset = cache.get("url_lists")
+        queryset = cache.get(f"url_lists_{request.users_id}")
         if not queryset:
             queryset = self.get_queryset().filter(creator_id=request.user.id).all()
-            cache.set("url_lists", queryset, 5)
+            cache.set(f"url_lists_{request.users_id}", queryset, 5)
         serializer = UrlListSerializer(queryset, many=True)
         return Response(serializer.data)
 
