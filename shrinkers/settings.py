@@ -82,6 +82,7 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "django_user_agents.middleware.UserAgentMiddleware",
     # "debug_toolbar.middleware.DebugToolbarMiddleware", # Django Debug Toolbar
+    "shortener.middleware.ShrinkersMiddleware",
 ]
 GEOIP_PATH = os.path.join(BASE_DIR, "geolite2")
 # if DEBUG:
@@ -161,12 +162,12 @@ USE_TZ = True
 
 keys = json.load(open(os.path.join(BASE_DIR, "shrinkers/service_key.json")))
 
-try:
-    EMAIL_ID = keys.get("email")
-    EMAIL_PW = json.load(open(os.path.join(BASE_DIR, "keys.json"))).get("email_pw")
-except Exception:
-    EMAIL_ID = None
-    EMAIL_PW = None
+# try:
+#     EMAIL_ID = keys.get("email")
+#     EMAIL_PW = json.load(open(os.path.join(BASE_DIR, "keys.json"))).get("email_pw")
+# except Exception:
+#     EMAIL_ID = None
+#     EMAIL_PW = None
 
 GS_CREDENTIALS = service_account.Credentials.from_service_account_info(keys.get("service_key"))
 DEFAULT_FILE_STORAGE = "config.storage_backends.GoogleCloudMediaStorage"

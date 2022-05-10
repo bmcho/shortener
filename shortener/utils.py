@@ -3,7 +3,6 @@ from rest_framework.response import Response
 from shortener.models import ShortenedUrls, Users
 from django.db.models import F
 from datetime import datetime, timedelta
-from shrinkers.settings import EMAIL_ID, EMAIL_PW
 
 
 def url_count_changer(request, is_increase: bool):
