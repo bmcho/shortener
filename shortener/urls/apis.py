@@ -44,27 +44,28 @@ class UserViewSet(viewsets.ModelViewSet):
     @renderer_classes([JSONRenderer])
     def destroy(self, request, pk=None):
         # DELETE
-        queryset = self.get_queryset().filter(pk=pk, creator_id=request.user.id)
+        queryset = self.get_queryset().filter(pk=pk, creator_id=request.users_id)
         if not queryset.exists():
             raise Http404
         queryset.delete()
-        cache.delete(f"url_lists_{request.users_id}")
+        # cache.delete(f"url_lists_{request.users_id}")
         url_count_changer(request, False)
         return MsgOk()
 
     def list(self, request):
         # GET ALL
         # query cache
-        queryset = cache.get(f"url_lists_{request.users_id}")
-        if not queryset:
-            queryset = self.get_queryset().filter(creator_id=request.user.id).all()
-            cache.set(f"url_lists_{request.users_id}", queryset, 5)
+        # queryset = cache.get(f"url_lists_{request.users_id}")
+        # if not queryset:
+        #     queryset = self.get_queryset().filter(creator_id=request.user.id).all()
+        #     cache.set(f"url_lists_{request.users_id}", queryset, 5)
+        queryset = self.get_queryset().filter(creator_id=request.users_id).all()
         serializer = UrlListSerializer(queryset, many=True)
         return Response(serializer.data)
 
     @action(detail=True, methods=["get", "post"])
     def add_browser_today(self, request, pk=None):
-        queryset = self.get_queryset().filter(pk=pk, creator_id=request.user.id).first()
+        queryset = self.get_queryset().filter(pk=pk, creator_id=request.users_id).first()
         new_history = Statistic()
         new_history.record(request, queryset, {})
         return MsgOk()
@@ -73,7 +74,7 @@ class UserViewSet(viewsets.ModelViewSet):
     def get_browser_stats(self, request, pk=None):
         queryset = Statistic.objects.filter(
             shortened_url_id=pk,
-            shortened_url__creator_id=request.user.id,
+            shortened_url__creator_id=request.users_id,
             created_at__gte=get_kst() - timedelta(days=14),
         )
         if not queryset.exists():

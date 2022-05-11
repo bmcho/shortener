@@ -16,6 +16,7 @@ Including another URLconf
 from shortener.urls.views import url_redirect
 from shortener.urls.urls import router as url_router
 from shrinkers.settings import DEBUG
+
 if DEBUG:
     import debug_toolbar
 
@@ -49,13 +50,14 @@ urlpatterns = [
     re_path(r"^swagger(?P<format>\.json|\.yaml)$", schema_view.without_ui(cache_timeout=0), name="schema-json"),
     re_path(r"^swagger/$", schema_view.with_ui("swagger", cache_timeout=0), name="schema-swagger-ui"),
     re_path(r"^redoc/$", schema_view.with_ui("redoc", cache_timeout=0), name="schema-redoc"),
-    path('admin/', admin.site.urls),
+    path("admin/", admin.site.urls),
     path("", include("shortener.index.urls")),
     # path("__debug__/", include(debug_toolbar.urls)),  # Django Debug Tool
     path("urls/", include("shortener.urls.urls")),
     path("<str:prefix>/<str:url>", url_redirect),
     path("api/", include(url_router.urls)),
     path("ninja-api/", apis.urls),
+    path("admins/", include("shortener.admins.urls")),
 ]
 
 if DEBUG:

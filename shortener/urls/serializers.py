@@ -42,7 +42,8 @@ class UrlCreateSerializer(serializers.Serializer):
 
     def create(self, request, data, commit=True):
         instance = ShortenedUrls()
-        instance.creator_id = request.user.id
+        users = Users.objects.filter(request.users_id).first()
+        instance.creator = users
         instance.category = data.get("category", None)
         instance.target_url = data.get("target_url").strip()
         if commit:
