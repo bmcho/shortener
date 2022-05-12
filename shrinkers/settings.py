@@ -58,14 +58,15 @@ INSTALLED_APPS = [
 if DEBUG:
     INSTALLED_APPS += [
         "debug_toolbar",
-        "django_seed",
+        # "django_seed",
     ]
 
 REST_FRAMEWORK = {"DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.LimitOffsetPagination", "PAGE_SIZE": 20}
 
-INTERNAL_IPS = [
-    "127.0.0.1",
-]  # Django Debug Toolbar
+INTERNAL_IPS = ("127.0.0.1",)
+# INTERNAL_IPS = [
+#     "127.0.0.1",
+# ]  # Django Debug Toolbar
 
 LOGIN_URL = "/login"
 
@@ -81,9 +82,14 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "django_user_agents.middleware.UserAgentMiddleware",
-    # "debug_toolbar.middleware.DebugToolbarMiddleware", # Django Debug Toolbar
     "shortener.middleware.ShrinkersMiddleware",
 ]
+
+if DEBUG:
+    MIDDLEWARE += [
+        "debug_toolbar.middleware.DebugToolbarMiddleware",  # Django Debug Toolbar
+    ]
+
 GEOIP_PATH = os.path.join(BASE_DIR, "geolite2")
 # if DEBUG:
 #     INSTALLED_APPS += [
@@ -160,20 +166,27 @@ USE_I18N = True
 
 USE_TZ = True
 
-keys = json.load(open(os.path.join(BASE_DIR, "shrinkers/service_key.json")))
+temp = False
+if DEBUG and temp:
+    # 지금은 static을 무조건 구글gcp 에서 가져오고 있음
+    # 로컬에 static을 두니깐 .. git이 너무 느려
+    STATIC_URL = "/static/"
 
-# try:
-#     EMAIL_ID = keys.get("email")
-#     EMAIL_PW = json.load(open(os.path.join(BASE_DIR, "keys.json"))).get("email_pw")
-# except Exception:
-#     EMAIL_ID = None
-#     EMAIL_PW = None
+else:
+    keys = json.load(open(os.path.join(BASE_DIR, "shrinkers/service_key.json")))
 
-GS_CREDENTIALS = service_account.Credentials.from_service_account_info(keys.get("service_key"))
-DEFAULT_FILE_STORAGE = "config.storage_backends.GoogleCloudMediaStorage"
-STATICFILES_STORAGE = "config.storage_backends.GoogleCloudStaticStorage"
-GS_STATIC_BUCKET_NAME = "shrinkers-api-bk"
-STATIC_URL = "https://storage.googleapis.com/{}/statics/".format(GS_STATIC_BUCKET_NAME)
+    # try:
+    #     EMAIL_ID = keys.get("email")
+    #     EMAIL_PW = json.load(open(os.path.join(BASE_DIR, "keys.json"))).get("email_pw")
+    # except Exception:
+    #     EMAIL_ID = None
+    #     EMAIL_PW = None
+
+    GS_CREDENTIALS = service_account.Credentials.from_service_account_info(keys.get("service_key"))
+    DEFAULT_FILE_STORAGE = "config.storage_backends.GoogleCloudMediaStorage"
+    STATICFILES_STORAGE = "config.storage_backends.GoogleCloudStaticStorage"
+    GS_STATIC_BUCKET_NAME = "shrinkers-api-bk"
+    STATIC_URL = "https://storage.googleapis.com/{}/statics/".format(GS_STATIC_BUCKET_NAME)
 # 'django-storages[google]'
 #  google-auth
 

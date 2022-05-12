@@ -1,7 +1,7 @@
 """shrinkers URL Configuration
 
 The `urlpatterns` list routes URLs to views. For more information please see:
-    https://docs.djangoproject.com/en/4.0/topics/http/urls/
+    https://docs.djangoproject.com/en/3.2/topics/http/urls/
 Examples:
 Function views
     1. Add an import:  from my_app import views
@@ -19,16 +19,14 @@ from shrinkers.settings import DEBUG
 
 if DEBUG:
     import debug_toolbar
-
-from django.urls import include, re_path
+from django.conf.urls import include
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, re_path
 from rest_framework import permissions
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
 from ninja import NinjaAPI
 from shortener.users.apis import user as user_router
-
 
 schema_view = get_schema_view(
     openapi.Info(
@@ -43,8 +41,9 @@ schema_view = get_schema_view(
     permission_classes=(permissions.AllowAny,),
 )
 
+
 apis = NinjaAPI(title="Shrinkers API")
-apis.add_router("/users/", user_router, tags=["Common"])
+apis.add_router("/users/", user_router, tags=["Users"])
 
 urlpatterns = [
     re_path(r"^swagger(?P<format>\.json|\.yaml)$", schema_view.without_ui(cache_timeout=0), name="schema-json"),
@@ -52,12 +51,11 @@ urlpatterns = [
     re_path(r"^redoc/$", schema_view.with_ui("redoc", cache_timeout=0), name="schema-redoc"),
     path("admin/", admin.site.urls),
     path("", include("shortener.index.urls")),
-    # path("__debug__/", include(debug_toolbar.urls)),  # Django Debug Tool
     path("urls/", include("shortener.urls.urls")),
-    path("<str:prefix>/<str:url>", url_redirect),
+    path("admins/", include("shortener.admins.urls")),
     path("api/", include(url_router.urls)),
     path("ninja-api/", apis.urls),
-    path("admins/", include("shortener.admins.urls")),
+    path("<str:prefix>/<str:url>", url_redirect),
 ]
 
 if DEBUG:
