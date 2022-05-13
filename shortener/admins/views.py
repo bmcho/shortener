@@ -1,4 +1,6 @@
 from django.db.models.query import Prefetch
+from django.db.models import Subquery, OuterRef
+from shortener.models import ShortenedUrls, Statistic
 from shortener.models import ShortenedUrls
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
@@ -16,7 +18,7 @@ def url_list(request):
             Prefetch("creator__user"),
             Prefetch("creator__organization"),
             Prefetch("creator__organization__pay_plan"),
-            Prefetch("statistic_set"),
+            Prefetch("statistic_set", queryset=Statistic.objects.filter(web_browser="FireFox"), to_attr="edge_usage"),
         )
         .all()
     )
