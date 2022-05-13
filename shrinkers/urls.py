@@ -27,6 +27,7 @@ from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
 from ninja import NinjaAPI
 from shortener.users.apis import user as user_router
+from shortener.scheduler import cron_jobs
 
 schema_view = get_schema_view(
     openapi.Info(
@@ -62,3 +63,5 @@ if DEBUG:
     urlpatterns += [
         path("__debug__/", include(debug_toolbar.urls)),  # Django Debug Tool
     ]
+
+cron_jobs()
