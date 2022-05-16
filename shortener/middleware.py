@@ -1,4 +1,4 @@
-from shortener.models import BackOfficeLogs, Users
+from shortener.models import BackOfficeLogs, JobInfo, Users
 from urllib.parse import unquote
 import json
 
@@ -15,6 +15,7 @@ class ShrinkersMiddleware:
                 request.users_id = get_user.id
 
         response = self.get_response(request)
+
         if request.method not in ["GET", "OPTIONS"]:
             try:
                 body = json.loads(request.body) if request.body else None
@@ -37,6 +38,20 @@ class ShrinkersMiddleware:
                 status_code=response.status_code,
                 method=request.method,
             )
+
+            if response.status_code >= 500:
+                ADMIN_EMAIL = "rocklay.info@gmail.com"
+                content = (
+                    f"{response.status_code} 에러 발생 \n"
+                    f"엔드포인드 : ({str(request.method).upper()}) {endpoint}\n"
+                    f"IP : {ip} \n"
+                    f"User ID : {request.users_id} \n"
+                )
+                JobInfo.objects.create(
+                    job_id=f"u-0-send_email",
+                    user_id=request.users_id,
+                    additional_info={"recipient": ["admin", ADMIN_EMAIL], "content": content},
+                )
 
         return response
 

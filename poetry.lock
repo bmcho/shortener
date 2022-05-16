@@ -948,6 +948,14 @@ python-versions = "*"
 ua-parser = ">=0.10.0"
 
 [[package]]
+name = "yamail"
+version = "1.0.2"
+description = "a sample mail."
+category = "main"
+optional = false
+python-versions = "*"
+
+[[package]]
 name = "yarl"
 version = "1.7.2"
 description = "Yet another URL library"
@@ -962,7 +970,7 @@ multidict = ">=4.0"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.8"
-content-hash = "97b9e7dd3dfc69a1b1c53595713e17215ab3bc6ee37bf339d2196bcfacba71c7"
+content-hash = "deb28bcfac578df41ce03e8429b74bb7ac0e143cfa93abc15ce42b5f1ea04bb1"
 
 [metadata.files]
 aiohttp = [
@@ -1678,6 +1686,10 @@ urllib3 = [
 user-agents = [
     {file = "user-agents-2.2.0.tar.gz", hash = "sha256:d36d25178db65308d1458c5fa4ab39c9b2619377010130329f3955e7626ead26"},
     {file = "user_agents-2.2.0-py3-none-any.whl", hash = "sha256:a98c4dc72ecbc64812c4534108806fb0a0b3a11ec3fd1eafe807cee5b0a942e7"},
+]
+yamail = [
+    {file = "yamail-1.0.2-py3-none-any.whl", hash = "sha256:8b2e2ee640ab29a9aa864eb91eaf976292f2ac29c09564f020bdd147745aef99"},
+    {file = "yamail-1.0.2.tar.gz", hash = "sha256:3e231cf32dc5c3c1886c7298310a27f154dc0a451e17fee8deaaa82d7f907ad9"},
 ]
 yarl = [
     {file = "yarl-1.7.2-cp310-cp310-macosx_10_9_universal2.whl", hash = "sha256:f2a8508f7350512434e41065684076f640ecce176d262a7d54f0da41d99c5a95"},
