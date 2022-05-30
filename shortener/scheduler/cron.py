@@ -18,7 +18,6 @@ def telegram_command_handler():
 @db_auto_reconnect
 def db_job_handler():
     jobs = JobInfo.objects.filter(status="wait").order_by("id").all()
-    print(type(jobs))
     for j in jobs:
         print(type(j))
         try:

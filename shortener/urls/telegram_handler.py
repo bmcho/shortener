@@ -37,7 +37,7 @@ def chat_handler():
     if final_ts > latest_ts:
         scheduler.update(value=final_ts)
 
-    print(chats)
+    print(f"telegram:{chats}")
     return chats
 
 

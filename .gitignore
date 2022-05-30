@@ -166,7 +166,7 @@ cython_debug/
 
 # End of https://www.toptal.com/developers/gitignore/api/python
 
-shortener/static/
+# shortener/static/
 .pyc/
 /shrinkers/service_key.json 
 cache_file/

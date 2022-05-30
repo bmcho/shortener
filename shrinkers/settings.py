@@ -169,7 +169,7 @@ USE_I18N = True
 USE_TZ = True
 
 temp = False
-if DEBUG and temp:
+if DEBUG:
     # 지금은 static을 무조건 구글gcp 에서 가져오고 있음
     # 로컬에 static을 두니깐 .. git이 너무 느려
     STATIC_URL = "/static/"
