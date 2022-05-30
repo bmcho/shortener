@@ -48,7 +48,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "shortener.apps.ShortenerConfig",
-    # 'debug_toolbar', # Django Debug Toolbar
+    "debug_toolbar",  # Django Debug Toolbar
     # 'django_seed',
     "django_user_agents",
     "drf_yasg",
