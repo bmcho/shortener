@@ -48,8 +48,6 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "shortener.apps.ShortenerConfig",
-    "debug_toolbar",  # Django Debug Toolbar
-    # 'django_seed',
     "django_user_agents",
     "drf_yasg",
     "rest_framework",
@@ -58,15 +56,14 @@ INSTALLED_APPS = [
 if DEBUG:
     INSTALLED_APPS += [
         "debug_toolbar",
-        # "django_seed",
+        "django_seed",
     ]
 
 REST_FRAMEWORK = {"DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.LimitOffsetPagination", "PAGE_SIZE": 20}
 
-INTERNAL_IPS = ("127.0.0.1",)
-# INTERNAL_IPS = [
-#     "127.0.0.1",
-# ]  # Django Debug Toolbar
+INTERNAL_IPS = [
+    "127.0.0.1",
+]  # Django Debug Toolbar
 
 LOGIN_URL = "/login"
 
@@ -91,10 +88,7 @@ if DEBUG:
     ]
 
 GEOIP_PATH = os.path.join(BASE_DIR, "geolite2")
-# if DEBUG:
-#     INSTALLED_APPS += [
-#         "debug_toolbar.middleware.DebugToolbarMiddleware",  # Django Debug Toolbar
-#     ]
+
 
 ROOT_URLCONF = "shrinkers.urls"
 
@@ -168,7 +162,8 @@ USE_I18N = True
 
 USE_TZ = True
 
-temp = False
+# STATIC_URL = "static/"
+# temp = False
 if DEBUG:
     # 지금은 static을 무조건 구글gcp 에서 가져오고 있음
     # 로컬에 static을 두니깐 .. git이 너무 느려
@@ -189,6 +184,7 @@ else:
     STATICFILES_STORAGE = "config.storage_backends.GoogleCloudStaticStorage"
     GS_STATIC_BUCKET_NAME = "shrinkers-api-bk"
     STATIC_URL = "https://storage.googleapis.com/{}/statics/".format(GS_STATIC_BUCKET_NAME)
+
 # 'django-storages[google]'
 #  google-auth
 
@@ -203,12 +199,12 @@ else:
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # Filesystem caching¶
-CACHES = {
-    "default": {
-        "BACKEND": "django.core.cache.backends.filebased.FileBasedCache",
-        "LOCATION": os.path.join(BASE_DIR, "cache_file"),
-    }
-}
+# CACHES = {
+#     "default": {
+#         "BACKEND": "django.core.cache.backends.filebased.FileBasedCache",
+#         "LOCATION": os.path.join(BASE_DIR, "cache_file"),
+#     }
+# }
 
 
 # Local-memory caching
