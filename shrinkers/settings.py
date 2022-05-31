@@ -167,7 +167,7 @@ USE_TZ = True
 if DEBUG:
     # 지금은 static을 무조건 구글gcp 에서 가져오고 있음
     # 로컬에 static을 두니깐 .. git이 너무 느려
-    STATIC_URL = "/static/"
+    STATIC_URL = "static/"
 
 else:
     keys = json.load(open(os.path.join(BASE_DIR, "shrinkers/service_key.json")))
@@ -198,7 +198,7 @@ else:
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-# Filesystem caching¶
+# Filesystem caching
 # CACHES = {
 #     "default": {
 #         "BACKEND": "django.core.cache.backends.filebased.FileBasedCache",
