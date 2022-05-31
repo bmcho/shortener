@@ -27,12 +27,12 @@ jobs:
     - uses: danielr1996/envsubst-action@1.0.0
       with:
         input: template.json
-        output: keys.json
+        output: service_keys.json
       env:
         EMAIL: ${{ secrets.EMAIL }}
         EMAIL_PW: ${{ secrets.EMAIL_PW }}
         GOOGLE_SERVICE_KEY: ${{ secrets.GOOGLE_SERVICE_KEY }}
-    - run: cat keys.json
+    - run: cat service_keys.json
 
     - name: Deploy to App Engine
       id: deploy
