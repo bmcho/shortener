@@ -1,13 +1,24 @@
 {
-  "[python]": {
+    "python.linting.flake8Enabled": true,
+    "python.linting.enabled": false,
+    "[python]": {
       "editor.formatOnSave": true,
-  },
-  "[javascript]": {
+      
+    },
+    "editor.codeActionsOnSave": {
+        "source.organizeImports": true,
+        "python.sortImports": true
+    },
+    "[javascript]": {
       "editor.formatOnSave": true
-  },
-  "python.formatting.provider": "black",
-  "python.formatting.blackArgs": [
-      "--line-length",
-      "119",
-  ]
+    },
+    "python.linting.flake8Args": [
+        "--max-line-length=110",
+        "--ignore=F401,E402,E203"
+    ],
+    "python.formatting.provider": "black",
+    "python.formatting.blackArgs": [
+        "--line-length",
+        "110",
+    ]
 }

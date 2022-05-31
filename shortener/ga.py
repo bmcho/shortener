@@ -1,18 +1,20 @@
 import json
-from shrinkers import settings
 import os
+from datetime import date, datetime, timedelta
+
 import requests
 from django.utils import timezone
-from datetime import timedelta, datetime, date
 from googleapiclient.discovery import build  # pip install google-api-python-client
 from oauth2client.service_account import ServiceAccountCredentials  # pip install --upgrade oauth2client
+from shrinkers import settings
+
 from shortener.models import DailyVisitors
 
 
 def visitors():
     SCOPES = ["https://www.googleapis.com/auth/analytics.readonly"]
-    KEY_FILE_LOCATION = os.path.join(settings.BASE_DIR, "shrinkers/service_key.json")
-    keys = json.load(open(os.path.join(settings.BASE_DIR, "shrinkers/service_key.json")))
+    KEY_FILE_LOCATION = os.path.join(settings.BASE_DIR, "service_keys.json")
+    keys = json.load(open(os.path.join(settings.BASE_DIR, "service_keys.json")))
     print(KEY_FILE_LOCATION)
     VIEW_ID = "ga:266815261"
     print("Visitor Collected")
@@ -38,7 +40,9 @@ def visitors():
 
             def initialize_analyticsreporting():
                 # credentials = ServiceAccountCredentials.from_json_keyfile_name(KEY_FILE_LOCATION, SCOPES)
-                credentials = ServiceAccountCredentials.from_json_keyfile_dict(keys.get("service_key"), SCOPES)
+                credentials = ServiceAccountCredentials.from_json_keyfile_dict(
+                    keys.get("service_key"), SCOPES
+                )
                 analytics = build("analyticsreporting", "v4", credentials=credentials)
                 return analytics
 
@@ -76,6 +80,7 @@ def visitors():
             response = get_report(analytics)
             print(response)
             data = response["reports"][0]["data"]["rows"]
+            print(data)
             today_str = today.strftime("%Y%m%d")
             yesterday_str = yesterday.strftime("%Y%m%d")
             for i in data:

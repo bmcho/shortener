@@ -1,15 +1,21 @@
 from datetime import timedelta
+
+from django.contrib.auth.models import Group, User
+from django.core.cache import cache
 from django.db.models.aggregates import Count, Min
-from shortener.utils import MsgOk, get_kst, url_count_changer
-from shortener.models import ShortenedUrls, Statistic, Users
-from shortener.urls.serializers import BrowerStatSerializer, UrlCreateSerializer, UserSerializer, UrlListSerializer
-from django.contrib.auth.models import User, Group
 from django.http.response import Http404
+from rest_framework import permissions, status, viewsets
+from rest_framework.decorators import action, renderer_classes
 from rest_framework.renderers import JSONRenderer
 from rest_framework.response import Response
-from rest_framework import viewsets, permissions, status
-from rest_framework.decorators import renderer_classes, action
-from django.core.cache import cache
+from shortener.models import ShortenedUrls, Statistic, Users
+from shortener.urls.serializers import (
+    BrowerStatSerializer,
+    UrlCreateSerializer,
+    UrlListSerializer,
+    UserSerializer,
+)
+from shortener.utils import MsgOk, get_kst, url_count_changer
 
 
 class UserViewSet(viewsets.ModelViewSet):

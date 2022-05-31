@@ -11,9 +11,10 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 """
 
 import json
-from pathlib import Path
-from dotenv import load_dotenv
 import os
+from pathlib import Path
+
+from dotenv import load_dotenv
 from google.oauth2 import service_account
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -59,11 +60,15 @@ if DEBUG:
         "django_seed",
     ]
 
-REST_FRAMEWORK = {"DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.LimitOffsetPagination", "PAGE_SIZE": 20}
+REST_FRAMEWORK = {
+    "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.LimitOffsetPagination",
+    "PAGE_SIZE": 20,
+}
 
-INTERNAL_IPS = [
-    "127.0.0.1",
-]  # Django Debug Toolbar
+if DEBUG:
+    INTERNAL_IPS = [
+        "127.0.0.1",
+    ]  # Django Debug Toolbar
 
 LOGIN_URL = "/login"
 
@@ -128,8 +133,6 @@ DATABASES = {
     }
 }
 
-EMAIL_ID = ""
-EMAIL_PW = ""
 
 # Password validation
 # https://docs.djangoproject.com/en/4.0/ref/settings/#auth-password-validators
@@ -169,15 +172,18 @@ if DEBUG:
     # 로컬에 static을 두니깐 .. git이 너무 느려
     STATIC_URL = "static/"
 
-else:
-    keys = json.load(open(os.path.join(BASE_DIR, "shrinkers/service_key.json")))
+    EMAIL_ID = ""
+    EMAIL_PW = ""
 
-    # try:
-    #     EMAIL_ID = keys.get("email")
-    #     EMAIL_PW = json.load(open(os.path.join(BASE_DIR, "keys.json"))).get("email_pw")
-    # except Exception:
-    #     EMAIL_ID = None
-    #     EMAIL_PW = None
+else:
+    keys = json.load(open(os.path.join(BASE_DIR, "service_keys.json")))
+
+    try:
+        EMAIL_ID = keys.get("email")
+        EMAIL_PW = json.load(open(os.path.join(BASE_DIR, "service_keys.json"))).get("email_pw")
+    except Exception:
+        EMAIL_ID = None
+        EMAIL_PW = None
 
     GS_CREDENTIALS = service_account.Credentials.from_service_account_info(keys.get("service_key"))
     DEFAULT_FILE_STORAGE = "config.storage_backends.GoogleCloudMediaStorage"

@@ -1,18 +1,19 @@
-from re import I
-from shortener.ga import visitors
-from shortener.urls.telegram_handler import command_handler
-from django.contrib import messages
-from shortener.forms import UrlCreateForm
-from django.db.models import Count
-from django.shortcuts import redirect, render, get_object_or_404
-from shortener.models import ShortenedUrls, Statistic, TrackingParams
-from django.utils.html import json_script
-from shortener.utils import get_kst, url_count_changer
-from django.contrib.auth.decorators import login_required
-from ratelimit.decorators import ratelimit
 from datetime import datetime, timedelta
-from django.views.decorators.cache import never_cache  # no cache - per-side cache
+from re import I
+
+from django.contrib import messages
+from django.contrib.auth.decorators import login_required
+from django.db.models import Count
+from django.shortcuts import get_object_or_404, redirect, render
+from django.utils.html import json_script
 from django.views.decorators.cache import cache_page  # cache - per-view cache
+from django.views.decorators.cache import never_cache  # no cache - per-side cache
+from ratelimit.decorators import ratelimit
+from shortener.forms import UrlCreateForm
+from shortener.ga import visitors
+from shortener.models import ShortenedUrls, Statistic, TrackingParams
+from shortener.urls.telegram_handler import command_handler
+from shortener.utils import get_kst, url_count_changer
 
 
 @ratelimit(key="ip", rate="3/m")
@@ -98,7 +99,9 @@ def url_change(request, action, url_id):
 @login_required
 def statistic_view(request, url_id: int):
     url_info = get_object_or_404(ShortenedUrls, pk=url_id)
-    base_qs = Statistic.objects.filter(shortened_url_id=url_id, created_at__gte=get_kst() - timedelta(days=14))
+    base_qs = Statistic.objects.filter(
+        shortened_url_id=url_id, created_at__gte=get_kst() - timedelta(days=14)
+    )
     clicks = (
         base_qs.values("created_at__date")
         .annotate(clicks=Count("id"))
